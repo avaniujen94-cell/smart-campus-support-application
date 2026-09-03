@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Smart Campus Support Application</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Login screen -->
+  <section id="loginPage" class="login-page">
+    <div class="login-card">
+      <div class="logo-circle">SC</div>
+      <h1>Smart Campus Support Application</h1>
+      <p>Use your university account to continue.</p>
+
+      <label for="email">University Email</label>
+      <input id="email" type="email" placeholder="student@university.edu" />
+
+      <label for="password">Password</label>
+      <input id="password" type="password" placeholder="••••••••" />
+
+      <button id="loginBtn" class="primary-btn">Sign In</button>
+      <p class="small-text">Prototype login only — no real university account is connected.</p>
+    </div>
+  </section>
+
+  <!-- Main application -->
+  <div id="app" class="app hidden">
+    <header class="topbar">
+      <div class="brand">
+        <div class="logo-circle small-logo">SC</div>
+        <div>
+          <strong>SMART CAMPUS</strong>
+          <span>SUPPORT APPLICATION</span>
+        </div>
+      </div>
+
+      <button id="menuBtn" class="menu-btn" aria-label="Open navigation">☰</button>
+
+      <nav id="mainNav" class="main-nav">
+        <a href="#home">Home</a>
+        <a href="#announcements">Announcements</a>
+        <a href="#events">Events</a>
+        <a href="#campus-map">Campus Map</a>
+        <a href="#support">Support Services</a>
+        <button id="logoutBtn" class="logout-btn">Logout</button>
+      </nav>
+    </header>
+
+    <main id="home" class="page-wrap">
+      <section class="welcome-card">
+        <div>
+          <p class="eyebrow">STUDENT DASHBOARD</p>
+          <h2>Hi, Student!</h2>
+          <p>Welcome back. Find campus information quickly in one place.</p>
+        </div>
+        <div class="campus-icon">🏫</div>
+      </section>
+
+      <section class="search-section">
+        <input id="searchInput" type="search" placeholder="Search services, locations, events..." />
+      </section>
+
+      <section class="section">
+        <div class="section-heading">
+          <h3>Quick Actions</h3>
+        </div>
+
+        <div class="quick-grid">
+          <button class="quick-card" data-target="campus-map">
+            <span>📍</span>
+            <strong>Campus Map</strong>
+          </button>
+          <button class="quick-card" id="reportBtn">
+            <span>⚠️</span>
+            <strong>Report Issue</strong>
+          </button>
+          <button class="quick-card" data-target="support">
+            <span>🎓</span>
+            <strong>Support Services</strong>
+          </button>
+          <button class="quick-card" data-target="events">
+            <span>📅</span>
+            <strong>Events</strong>
+          </button>
+        </div>
+      </section>
+
+      <div class="content-grid">
+        <section id="announcements" class="section card-section">
+          <div class="section-heading">
+            <h3>Announcements</h3>
+            <button class="text-btn">View All</button>
+          </div>
+
+          <div class="list-card searchable-item" data-search="library hours updated library">
+            <div class="list-icon">📢</div>
+            <div>
+              <h4>Library Hours Updated</h4>
+              <p>The central library is now open from 7:00 AM to 10:00 PM.</p>
+              <small>Today</small>
+            </div>
+          </div>
+
+          <div class="list-card searchable-item" data-search="water maintenance notice east wing">
+            <div class="list-icon">💧</div>
+            <div>
+              <h4>Water Maintenance Notice</h4>
+              <p>Water supply may be interrupted in the East Wing on Friday.</p>
+              <small>Yesterday</small>
+            </div>
+          </div>
+
+          <div class="list-card searchable-item" data-search="student id renewal card">
+            <div class="list-icon">🪪</div>
+            <div>
+              <h4>Student ID Renewal</h4>
+              <p>Renew your student ID before the end of the month.</p>
+              <small>2 days ago</small>
+            </div>
+          </div>
+        </section>
+
+        <section id="events" class="section card-section">
+          <div class="section-heading">
+            <h3>Upcoming Events</h3>
+            <button class="text-btn">View All</button>
+          </div>
+
+          <div class="event-card searchable-item" data-search="career fair student centre careers">
+            <div class="date-box"><span>SEP</span><strong>15</strong></div>
+            <div>
+              <h4>Career Fair</h4>
+              <p>10:00 AM – 2:00 PM</p>
+              <small>Student Centre</small>
+            </div>
+          </div>
+
+          <div class="event-card searchable-item" data-search="mental health wellness workshop">
+            <div class="date-box"><span>SEP</span><strong>20</strong></div>
+            <div>
+              <h4>Mental Health Workshop</h4>
+              <p>2:00 PM – 4:00 PM</p>
+              <small>Wellness Centre</small>
+            </div>
+          </div>
+
+          <div class="event-card searchable-item" data-search="sports day sports complex">
+            <div class="date-box"><span>SEP</span><strong>22</strong></div>
+            <div>
+              <h4>Sports Day</h4>
+              <p>8:00 AM – 4:00 PM</p>
+              <small>University Sports Complex</small>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="content-grid">
+        <section id="campus-map" class="section card-section">
+          <div class="section-heading">
+            <h3>Campus Map</h3>
+            <button class="text-btn">View Full Map</button>
+          </div>
+
+          <div class="map-box">
+            <div class="road road-a"></div>
+            <div class="road road-b"></div>
+            <span class="marker marker-1">📍<small>Library</small></span>
+            <span class="marker marker-2">📍<small>Student Centre</small></span>
+            <span class="marker marker-3">📍<small>Admin</small></span>
+            <span class="marker marker-4">📍<small>Science</small></span>
+          </div>
+        </section>
+
+        <section id="support" class="section card-section">
+          <div class="section-heading">
+            <h3>Support Services</h3>
+          </div>
+
+          <div class="support-grid">
+            <article class="support-card searchable-item" data-search="academic support advising study">
+              <span>📚</span>
+              <div>
+                <h4>Academic Support</h4>
+                <p>Study advice and academic assistance.</p>
+              </div>
+              <button>Get Help</button>
+            </article>
+
+            <article class="support-card searchable-item" data-search="it help desk technology support password">
+              <span>💻</span>
+              <div>
+                <h4>IT Help Desk</h4>
+                <p>Technical support for university systems.</p>
+              </div>
+              <button>Get Help</button>
+            </article>
+
+            <article class="support-card searchable-item" data-search="health wellness counselling wellbeing">
+              <span>❤️</span>
+              <div>
+                <h4>Health & Wellness</h4>
+                <p>Wellbeing and counselling support.</p>
+              </div>
+              <button>Get Help</button>
+            </article>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <footer>
+      <p>Smart Campus Support Application — Student Prototype</p>
+    </footer>
+  </div>
+
+  <!-- Report Issue Modal -->
+  <div id="reportModal" class="modal hidden">
+    <div class="modal-card">
+      <button id="closeModal" class="close-btn">×</button>
+      <h3>Report an Issue</h3>
+      <label for="issueType">Issue Type</label>
+      <select id="issueType">
+        <option>Incorrect campus information</option>
+        <option>Broken link</option>
+        <option>Navigation issue</option>
+        <option>Other</option>
+      </select>
+      <label for="issueText">Details</label>
+      <textarea id="issueText" rows="5" placeholder="Describe the issue..."></textarea>
+      <button id="submitIssue" class="primary-btn">Submit</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
