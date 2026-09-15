@@ -1,99 +1,381 @@
-const loginScreen = document.getElementById("loginScreen");
+const loginPage = document.getElementById("loginPage");
 const app = document.getElementById("app");
 const loginBtn = document.getElementById("loginBtn");
 const logoutBtn = document.getElementById("logoutBtn");
-const mobileMenuBtn = document.getElementById("mobileMenuBtn");
-const navMenu = document.getElementById("navMenu");
-const globalSearch = document.getElementById("globalSearch");
 
-const reportIssueBtn = document.getElementById("reportIssueBtn");
+const menuBtn = document.getElementById("menuBtn");
+const mainNav = document.getElementById("mainNav");
+
+const searchInput = document.getElementById("searchInput");
+
+const reportBtn = document.getElementById("reportBtn");
 const reportModal = document.getElementById("reportModal");
-const closeModalBtn = document.getElementById("closeModalBtn");
-const submitIssueBtn = document.getElementById("submitIssueBtn");
+const closeModal = document.getElementById("closeModal");
+const submitIssue = document.getElementById("submitIssue");
 
-loginBtn.addEventListener("click", () => {
-  loginScreen.classList.add("hidden");
-  app.classList.remove("hidden");
+
+// ================================
+// LOGIN
+// ================================
+
+loginBtn.addEventListener("click", async () => {
+
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value.trim();
+
+    if (!email || !password) {
+        alert("Please enter your email and password.");
+        return;
+    }
+
+    try {
+
+        const response = await fetch("/api/login", {
+
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+                email: email,
+                password: password
+            })
+
+        });
+
+        const result = await response.json();
+
+        if (response.ok && result.success) {
+
+            loginPage.classList.add("hidden");
+            app.classList.remove("hidden");
+
+        } else {
+
+            alert(result.message || "Invalid email or password.");
+
+        }
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert("Unable to connect to the Java backend.");
+
+    }
+
 });
+
+
+// ================================
+// LOGOUT
+// ================================
 
 logoutBtn.addEventListener("click", () => {
-  app.classList.add("hidden");
-  loginScreen.classList.remove("hidden");
-  navMenu.classList.remove("open");
+
+    app.classList.add("hidden");
+    loginPage.classList.remove("hidden");
+
+    mainNav.classList.remove("open");
+
 });
 
-mobileMenuBtn.addEventListener("click", () => {
-  navMenu.classList.toggle("open");
+
+// ================================
+// MOBILE MENU
+// ================================
+
+menuBtn.addEventListener("click", () => {
+
+    mainNav.classList.toggle("open");
+
 });
 
-document.querySelectorAll("nav a").forEach(link => {
-  link.addEventListener("click", () => navMenu.classList.remove("open"));
-});
 
-document.querySelectorAll("[data-scroll]").forEach(button => {
-  button.addEventListener("click", () => {
-    document.getElementById(button.dataset.scroll)?.scrollIntoView({
-      behavior: "smooth",
-      block: "start"
+// ================================
+// NAVIGATION
+// ================================
+
+document.querySelectorAll("#mainNav a").forEach(link => {
+
+    link.addEventListener("click", () => {
+
+        mainNav.classList.remove("open");
+
     });
-  });
+
 });
 
-globalSearch.addEventListener("input", () => {
-  const value = globalSearch.value.trim().toLowerCase();
 
-  document.querySelectorAll(".searchable").forEach(item => {
-    const content = (item.dataset.search + " " + item.textContent).toLowerCase();
-    item.classList.toggle("search-hidden", value && !content.includes(value));
-  });
+// ================================
+// QUICK ACTIONS
+// ================================
+
+document.querySelectorAll(".quick-card[data-target]").forEach(button => {
+
+    button.addEventListener("click", () => {
+
+        const target = document.getElementById(button.dataset.target);
+
+        if (target) {
+
+            target.scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+            });
+
+        }
+
+    });
+
 });
 
-reportIssueBtn.addEventListener("click", () => {
-  reportModal.classList.remove("hidden");
+
+// ================================
+// SEARCH
+// ================================
+
+searchInput.addEventListener("input", () => {
+
+    const value = searchInput.value.trim().toLowerCase();
+
+    document.querySelectorAll(".searchable-item").forEach(item => {
+
+        const searchText =
+            (item.dataset.search || "") +
+            " " +
+            item.textContent;
+
+        const matches =
+            searchText.toLowerCase().includes(value);
+
+        item.style.display = matches ? "" : "none";
+
+    });
+
 });
 
-closeModalBtn.addEventListener("click", () => {
-  reportModal.classList.add("hidden");
+
+// ================================
+// REPORT ISSUE MODAL
+// ================================
+
+reportBtn.addEventListener("click", () => {
+
+    reportModal.classList.remove("hidden");
+
 });
+
+
+closeModal.addEventListener("click", () => {
+
+    reportModal.classList.add("hidden");
+
+});
+
 
 reportModal.addEventListener("click", event => {
-  if (event.target === reportModal) {
-    reportModal.classList.add("hidden");
-  }
+
+    if (event.target === reportModal) {
+
+        reportModal.classList.add("hidden");
+
+    }
+
 });
 
-submitIssueBtn.addEventListener("click", () => {
-  const issueDetails = document.getElementById("issueDetails").value.trim();
 
-  if (!issueDetails) {
-    alert("Please enter a short description.");
-    return;
-  }
+// ================================
+// SUBMIT ISSUE
+// ================================
 
-  alert("Issue recorded in the front-end prototype. Database connection will be added later.");
-  document.getElementById("issueDetails").value = "";
-  reportModal.classList.add("hidden");
+submitIssue.addEventListener("click", async () => {
+
+    const issueType =
+        document.getElementById("issueType").value;
+
+    const issueText =
+        document.getElementById("issueText").value.trim();
+
+
+    if (!issueText) {
+
+        alert("Please describe the issue.");
+
+        return;
+
+    }
+
+
+    try {
+
+        const response = await fetch("/api/feedback", {
+
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+
+                user_id: 1,
+                subject: issueType,
+                description: issueText,
+                type: "Issue"
+
+            })
+
+        });
+
+
+        const result = await response.json();
+
+
+        if (response.ok && result.success) {
+
+            alert("Issue submitted successfully.");
+
+            document.getElementById("issueText").value = "";
+
+            reportModal.classList.add("hidden");
+
+        } else {
+
+            alert(result.message || "Unable to submit issue.");
+
+        }
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert("Unable to connect to the Java backend.");
+
+    }
+
 });
 
-/*
-  BACKEND INTEGRATION NOTES FOR SUBHAM
 
-  Later, replace the mock content with calls to the Java backend.
+// ================================
+// LOAD ANNOUNCEMENTS
+// ================================
 
-  Suggested endpoints:
+async function loadAnnouncements() {
 
-  GET    /api/announcements
-  GET    /api/events
-  GET    /api/locations
-  GET    /api/support-services
-  POST   /api/feedback
-  POST   /api/login
+    try {
 
-  Example:
+        const response =
+            await fetch("/api/announcements");
 
-  fetch("/api/announcements")
-    .then(response => response.json())
-    .then(data => {
-      // render announcements here
-    });
-*/
+        const announcements =
+            await response.json();
+
+        console.log("Announcements:", announcements);
+
+    } catch (error) {
+
+        console.error(
+            "Error loading announcements:",
+            error
+        );
+
+    }
+
+}
+
+
+// ================================
+// LOAD EVENTS
+// ================================
+
+async function loadEvents() {
+
+    try {
+
+        const response =
+            await fetch("/api/events");
+
+        const events =
+            await response.json();
+
+        console.log("Events:", events);
+
+    } catch (error) {
+
+        console.error(
+            "Error loading events:",
+            error
+        );
+
+    }
+
+}
+
+
+// ================================
+// LOAD CAMPUS LOCATIONS
+// ================================
+
+async function loadCampusLocations() {
+
+    try {
+
+        const response =
+            await fetch("/api/locations");
+
+        const locations =
+            await response.json();
+
+        console.log("Campus locations:", locations);
+
+    } catch (error) {
+
+        console.error(
+            "Error loading campus locations:",
+            error
+        );
+
+    }
+
+}
+
+
+// ================================
+// LOAD SUPPORT SERVICES
+// ================================
+
+async function loadSupportServices() {
+
+    try {
+
+        const response =
+            await fetch("/api/support-services");
+
+        const services =
+            await response.json();
+
+        console.log("Support services:", services);
+
+    } catch (error) {
+
+        console.error(
+            "Error loading support services:",
+            error
+        );
+
+    }
+
+}
+
+
+// ================================
+// INITIAL DATA LOAD
+// ================================
+
+loadAnnouncements();
+loadEvents();
+loadCampusLocations();
+loadSupportServices();
