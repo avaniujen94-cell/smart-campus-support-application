@@ -1,239 +1,624 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Smart Campus Support Application</title>
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="icon" type="image/svg+xml" href="assets/images/picture.svg">
 </head>
+
 <body>
-  <!-- Login screen -->
-  <section id="loginPage" class="login-page">
+
+  <!-- Login section -->
+  <section id="loginScreen" class="login-screen">
     <div class="login-card">
-      <div class="logo-circle">SC</div>
+      <div class="brand-mark">SC</div>
       <h1>Smart Campus Support Application</h1>
-      <p>Use your university account to continue.</p>
+      <p class="muted">Sign in with your university account</p>
 
       <label for="email">University Email</label>
-      <input id="email" type="email" placeholder="student@university.edu" />
+      <input id="email" type="email" placeholder="student@notredame.edu.au">
 
       <label for="password">Password</label>
-      <input id="password" type="password" placeholder="••••••••" />
+
+      <div class="password-box">
+        <input id="password" type="password" placeholder="Enter password">
+        <button type="button" id="togglePassword">Show</button>
+      </div>
+
+      <!-- Password requirements -->
+      <div id="passwordRequirements" class="password-requirements">
+        <p id="lengthCheck">✖ At least 10 characters</p>
+        <p id="letterCheck">✖ At least one letter</p>
+        <p id="numberCheck">✖ At least one number</p>
+        <p id="symbolCheck">✖ At least one symbol</p>
+      </div>
+
+      <p id="loginError" class="error-text"></p>
 
       <button id="loginBtn" class="primary-btn">Sign In</button>
-      <p class="small-text">Prototype login only — no real university account is connected.</p>
+
+      <p class="prototype-note">
+        Prototype only — real university authentication will be connected later.
+      </p>
     </div>
   </section>
 
+
   <!-- Main application -->
   <div id="app" class="app hidden">
+
+    <!-- Header and navigation -->
     <header class="topbar">
       <div class="brand">
-        <div class="logo-circle small-logo">SC</div>
+        <div class="brand-mark small">SC</div>
+
         <div>
           <strong>SMART CAMPUS</strong>
           <span>SUPPORT APPLICATION</span>
         </div>
       </div>
 
-      <button id="menuBtn" class="menu-btn" aria-label="Open navigation">☰</button>
+      <button id="mobileMenuBtn" class="mobile-menu-btn" aria-label="Open menu">
+        ☰
+      </button>
 
-      <nav id="mainNav" class="main-nav">
+      <nav id="navMenu">
         <a href="#home">Home</a>
         <a href="#announcements">Announcements</a>
         <a href="#events">Events</a>
         <a href="#campus-map">Campus Map</a>
         <a href="#support">Support Services</a>
-        <button id="logoutBtn" class="logout-btn">Logout</button>
+
+        <!-- Notifications -->
+        <div class="notification-box">
+          <button type="button" id="notificationBtn" class="notification-btn">
+            🔔
+            <span id="notificationCount">3</span>
+          </button>
+
+          <div id="notificationMenu" class="notification-menu hidden">
+
+            <div class="notification-header">
+              <strong>Notifications</strong>
+              <button type="button" id="markReadBtn" class="link-btn">
+                Mark all read
+              </button>
+            </div>
+
+            <div
+              class="notification-item"
+              data-title="Career Fair"
+              data-details="The Career Fair will be held on 15 September from 10:00 AM to 2:00 PM at the Student Centre."
+            >
+              <strong>Career Fair</strong>
+              <p>The Career Fair is coming up on 15 September.</p>
+            </div>
+
+            <div
+              class="notification-item"
+              data-title="Library Update"
+              data-details="The library opening hours have been updated. The library is now open from 7:00 AM to 10:00 PM."
+            >
+              <strong>Library Update</strong>
+              <p>Library opening hours have been updated.</p>
+            </div>
+
+            <div
+              class="notification-item"
+              data-title="Student Support"
+              data-details="New student support information is now available through the Smart Campus Support Application."
+            >
+              <strong>Student Support</strong>
+              <p>New support information is available.</p>
+            </div>
+
+            <div id="notificationDetails" class="notification-details hidden">
+              <strong id="notificationDetailTitle"></strong>
+              <p id="notificationDetailText"></p>
+            </div>
+
+          </div>
+        </div>
+        
+        <button id="logoutBtn" class="outline-btn">Logout</button>
       </nav>
     </header>
 
-    <main id="home" class="page-wrap">
-      <section class="welcome-card">
+
+    <main class="page-shell">
+
+      <!-- Dashboard -->
+      <section id="home" class="hero-card">
         <div>
-          <p class="eyebrow">STUDENT DASHBOARD</p>
+          <span class="eyebrow">STUDENT DASHBOARD</span>
           <h2>Hi, Student!</h2>
-          <p>Welcome back. Find campus information quickly in one place.</p>
+
+          <p>
+            Find announcements, events, campus locations and support services in one place.
+          </p>
         </div>
-        <div class="campus-icon">🏫</div>
+
+        <div class="hero-icon">🏫</div>
       </section>
 
-      <section class="search-section">
-        <input id="searchInput" type="search" placeholder="Search services, locations, events..." />
+
+      <!-- Search -->
+      <section class="search-bar-wrap">
+        <input
+          id="globalSearch"
+          type="search"
+          placeholder="Search announcements, events, services or locations..."
+        >
       </section>
 
+
+      <!-- Quick actions -->
       <section class="section">
-        <div class="section-heading">
+        <div class="section-header">
           <h3>Quick Actions</h3>
         </div>
 
         <div class="quick-grid">
-          <button class="quick-card" data-target="campus-map">
+
+          <button class="quick-card" data-scroll="campus-map">
             <span>📍</span>
             <strong>Campus Map</strong>
           </button>
-          <button class="quick-card" id="reportBtn">
+
+          <button class="quick-card" id="reportIssueBtn">
             <span>⚠️</span>
             <strong>Report Issue</strong>
           </button>
-          <button class="quick-card" data-target="support">
+
+          <button class="quick-card" data-scroll="support">
             <span>🎓</span>
             <strong>Support Services</strong>
           </button>
-          <button class="quick-card" data-target="events">
+
+          <button class="quick-card" data-scroll="events">
             <span>📅</span>
             <strong>Events</strong>
           </button>
+
         </div>
       </section>
 
-      <div class="content-grid">
-        <section id="announcements" class="section card-section">
-          <div class="section-heading">
-            <h3>Announcements</h3>
-            <button class="text-btn">View All</button>
-          </div>
 
-          <div class="list-card searchable-item" data-search="library hours updated library">
-            <div class="list-icon">📢</div>
-            <div>
-              <h4>Library Hours Updated</h4>
-              <p>The central library is now open from 7:00 AM to 10:00 PM.</p>
-              <small>Today</small>
-            </div>
-          </div>
+      <section class="two-column">
 
-          <div class="list-card searchable-item" data-search="water maintenance notice east wing">
-            <div class="list-icon">💧</div>
-            <div>
-              <h4>Water Maintenance Notice</h4>
-              <p>Water supply may be interrupted in the East Wing on Friday.</p>
-              <small>Yesterday</small>
-            </div>
-          </div>
+  <!-- Announcements -->
+  <div id="announcements" class="panel">
+    <div class="section-header">
+      <h3>Announcements</h3>
+      <button id="announcementToggle" class="link-btn">View All</button>
+    </div>
 
-          <div class="list-card searchable-item" data-search="student id renewal card">
-            <div class="list-icon">🪪</div>
-            <div>
-              <h4>Student ID Renewal</h4>
-              <p>Renew your student ID before the end of the month.</p>
-              <small>2 days ago</small>
-            </div>
-          </div>
-        </section>
+    <div id="announcementList">
 
-        <section id="events" class="section card-section">
-          <div class="section-heading">
-            <h3>Upcoming Events</h3>
-            <button class="text-btn">View All</button>
-          </div>
+      <article
+        class="list-item searchable announcement-item"
+        data-search="library hours updated"
+        data-title="Library Hours Updated"
+        data-date="Today"
+        data-details="The central library is now open from 7:00 AM to 10:00 PM. Students can use the library for individual study, group work, computer access and printing during the updated opening hours."
+      >
+        <div class="icon-box">📢</div>
+        <div>
+          <h4>Library Hours Updated</h4>
+          <p>The central library is now open from 7:00 AM to 10:00 PM.</p>
+          <small>Today</small>
+        </div>
+      </article>
 
-          <div class="event-card searchable-item" data-search="career fair student centre careers">
-            <div class="date-box"><span>SEP</span><strong>15</strong></div>
-            <div>
-              <h4>Career Fair</h4>
-              <p>10:00 AM – 2:00 PM</p>
-              <small>Student Centre</small>
-            </div>
-          </div>
+      <article
+        class="list-item searchable announcement-item"
+        data-search="water maintenance east wing"
+        data-title="Water Maintenance Notice"
+        data-date="Yesterday"
+        data-details="Scheduled water maintenance will take place in the East Wing on Friday. Students and staff may experience temporary interruptions to the water supply during the maintenance period."
+      >
+        <div class="icon-box">💧</div>
+        <div>
+          <h4>Water Maintenance Notice</h4>
+          <p>Water supply may be interrupted in the East Wing on Friday.</p>
+          <small>Yesterday</small>
+        </div>
+      </article>
 
-          <div class="event-card searchable-item" data-search="mental health wellness workshop">
-            <div class="date-box"><span>SEP</span><strong>20</strong></div>
-            <div>
-              <h4>Mental Health Workshop</h4>
-              <p>2:00 PM – 4:00 PM</p>
-              <small>Wellness Centre</small>
-            </div>
-          </div>
+      <article
+        class="list-item searchable announcement-item"
+        data-search="student id renewal"
+        data-title="Student ID Renewal"
+        data-date="2 days ago"
+        data-details="Students whose ID cards are expiring should complete their renewal before the end of the month. Please visit Student Services if you need assistance with your student ID."
+      >
+        <div class="icon-box">🪪</div>
+        <div>
+          <h4>Student ID Renewal</h4>
+          <p>Renew your student ID before the end of the month.</p>
+          <small>2 days ago</small>
+        </div>
+      </article>
 
-          <div class="event-card searchable-item" data-search="sports day sports complex">
-            <div class="date-box"><span>SEP</span><strong>22</strong></div>
-            <div>
-              <h4>Sports Day</h4>
-              <p>8:00 AM – 4:00 PM</p>
-              <small>University Sports Complex</small>
-            </div>
-          </div>
-        </section>
-      </div>
+      <article
+        class="list-item searchable announcement-item extra-announcement hidden"
+        data-search="parking permit application"
+        data-title="Parking Permit Applications"
+        data-date="3 days ago"
+        data-details="Applications for student parking permits are now open. Students who require on-campus parking should complete their application before permits reach capacity."
+      >
+        <div class="icon-box">🚗</div>
+        <div>
+          <h4>Parking Permit Applications</h4>
+          <p>Student parking permit applications are now open.</p>
+          <small>3 days ago</small>
+        </div>
+      </article>
 
-      <div class="content-grid">
-        <section id="campus-map" class="section card-section">
-          <div class="section-heading">
-            <h3>Campus Map</h3>
-            <button class="text-btn">View Full Map</button>
-          </div>
+      <article
+        class="list-item searchable announcement-item extra-announcement hidden"
+        data-search="study skills workshop"
+        data-title="Study Skills Workshop"
+        data-date="4 days ago"
+        data-details="A free study skills workshop will be available next week. The session will cover time management, note taking, assignment planning and exam preparation."
+      >
+        <div class="icon-box">📝</div>
+        <div>
+          <h4>Study Skills Workshop</h4>
+          <p>A free study skills session will be held next week.</p>
+          <small>4 days ago</small>
+        </div>
+      </article>
 
-          <div class="map-box">
-            <div class="road road-a"></div>
-            <div class="road road-b"></div>
-            <span class="marker marker-1">📍<small>Library</small></span>
-            <span class="marker marker-2">📍<small>Student Centre</small></span>
-            <span class="marker marker-3">📍<small>Admin</small></span>
-            <span class="marker marker-4">📍<small>Science</small></span>
-          </div>
-        </section>
-
-        <section id="support" class="section card-section">
-          <div class="section-heading">
-            <h3>Support Services</h3>
-          </div>
-
-          <div class="support-grid">
-            <article class="support-card searchable-item" data-search="academic support advising study">
-              <span>📚</span>
-              <div>
-                <h4>Academic Support</h4>
-                <p>Study advice and academic assistance.</p>
-              </div>
-              <button>Get Help</button>
-            </article>
-
-            <article class="support-card searchable-item" data-search="it help desk technology support password">
-              <span>💻</span>
-              <div>
-                <h4>IT Help Desk</h4>
-                <p>Technical support for university systems.</p>
-              </div>
-              <button>Get Help</button>
-            </article>
-
-            <article class="support-card searchable-item" data-search="health wellness counselling wellbeing">
-              <span>❤️</span>
-              <div>
-                <h4>Health & Wellness</h4>
-                <p>Wellbeing and counselling support.</p>
-              </div>
-              <button>Get Help</button>
-            </article>
-          </div>
-        </section>
-      </div>
-    </main>
-
-    <footer>
-      <p>Smart Campus Support Application — Student Prototype</p>
-    </footer>
+    </div>
   </div>
 
-  <!-- Report Issue Modal -->
+
+  <!-- Events -->
+  <div id="events" class="panel">
+    <div class="section-header">
+      <h3>Upcoming Events</h3>
+      <button id="eventToggle" class="link-btn">View All</button>
+    </div>
+
+    <div id="eventList">
+
+      <article
+        class="event-item searchable event-click"
+        data-search="career fair student centre"
+        data-title="Career Fair"
+        data-date="15 September"
+        data-time="10:00 AM – 2:00 PM"
+        data-location="Student Centre"
+        data-details="Meet employers, learn about career opportunities and speak with industry representatives."
+      >
+        <div class="date-box">
+          <span>SEP</span>
+          <strong>15</strong>
+        </div>
+
+        <div>
+          <h4>Career Fair</h4>
+          <p>10:00 AM – 2:00 PM</p>
+          <small>Student Centre</small>
+        </div>
+      </article>
+
+      <article
+        class="event-item searchable event-click"
+        data-search="mental health workshop wellness centre"
+        data-title="Mental Health Workshop"
+        data-date="20 September"
+        data-time="2:00 PM – 4:00 PM"
+        data-location="Wellness Centre"
+        data-details="This workshop will provide students with practical strategies for managing stress, improving wellbeing and finding available university support."
+      >
+        <div class="date-box">
+          <span>SEP</span>
+          <strong>20</strong>
+        </div>
+
+        <div>
+          <h4>Mental Health Workshop</h4>
+          <p>2:00 PM – 4:00 PM</p>
+          <small>Wellness Centre</small>
+        </div>
+      </article>
+
+      <article
+        class="event-item searchable event-click"
+        data-search="sports day university sports complex"
+        data-title="Sports Day"
+        data-date="22 September"
+        data-time="8:00 AM – 4:00 PM"
+        data-location="University Sports Complex"
+        data-details="Students are invited to join a full day of sports, team activities and social events at the university sports complex."
+      >
+        <div class="date-box">
+          <span>SEP</span>
+          <strong>22</strong>
+        </div>
+
+        <div>
+          <h4>Sports Day</h4>
+          <p>8:00 AM – 4:00 PM</p>
+          <small>University Sports Complex</small>
+        </div>
+      </article>
+
+      <article
+        class="event-item searchable event-click extra-event hidden"
+        data-search="coding club meetup computer lab"
+        data-title="Coding Club Meetup"
+        data-date="26 September"
+        data-time="3:00 PM – 5:00 PM"
+        data-location="Computer Lab 2"
+        data-details="Join the Coding Club for a student meetup focused on programming, project ideas and networking with other students."
+      >
+        <div class="date-box">
+          <span>SEP</span>
+          <strong>26</strong>
+        </div>
+
+        <div>
+          <h4>Coding Club Meetup</h4>
+          <p>3:00 PM – 5:00 PM</p>
+          <small>Computer Lab 2</small>
+        </div>
+      </article>
+
+      <article
+        class="event-item searchable event-click extra-event hidden"
+        data-search="study support session library"
+        data-title="Study Support Session"
+        data-date="29 September"
+        data-time="1:00 PM – 3:00 PM"
+        data-location="Main Library"
+        data-details="Students can receive support with study planning, note taking, assignment preparation and general academic skills."
+      >
+        <div class="date-box">
+          <span>SEP</span>
+          <strong>29</strong>
+        </div>
+
+        <div>
+          <h4>Study Support Session</h4>
+          <p>1:00 PM – 3:00 PM</p>
+          <small>Main Library</small>
+        </div>
+      </article>
+
+    </div>
+  </div>
+
+</section>
+
+
+<section class="two-column">
+
+  <!-- Campus map -->
+  <div id="campus-map" class="panel">
+    <div class="section-header">
+      <h3>Campus Map</h3>
+    </div>
+
+    <div class="location-search">
+      <input
+        id="locationSearch"
+        type="search"
+        placeholder="Search building or room, e.g. Library or B204"
+      >
+      <button id="locationSearchBtn" class="outline-btn">Find</button>
+    </div>
+
+    <p id="locationResult" class="location-result">
+      Search for a campus building or room.
+    </p>
+
+    <div class="map-placeholder">
+
+      <div class="road road-one"></div>
+      <div class="road road-two"></div>
+
+      <button class="map-marker marker-a" data-location="Library">
+        📍<small>Library</small>
+      </button>
+
+      <button class="map-marker marker-b" data-location="Student Centre">
+        📍<small>Student Centre</small>
+      </button>
+
+      <button class="map-marker marker-c" data-location="Administration">
+        📍<small>Admin</small>
+      </button>
+
+      <button class="map-marker marker-d" data-location="Science Building">
+        📍<small>Science</small>
+      </button>
+
+    </div>
+  </div>
+
+
+  <!-- Support services -->
+  <div id="support" class="panel">
+    <div class="section-header">
+      <h3>Support Services</h3>
+    </div>
+
+    <div class="support-list">
+
+      <article class="support-item searchable" data-search="academic support study advice">
+        <div class="icon-box">📚</div>
+
+        <div>
+          <h4>Academic Support</h4>
+          <p>Study advice and academic assistance.</p>
+        </div>
+
+        <button
+          class="outline-btn help-btn"
+          data-service="Academic Support"
+          data-email="academic.support@prototype.edu.au"
+          data-phone="(08) 9000 1001"
+          data-location="Student Support Centre"
+        >
+          Get Help
+        </button>
+      </article>
+
+      <article class="support-item searchable" data-search="it help desk technical support">
+        <div class="icon-box">💻</div>
+
+        <div>
+          <h4>IT Help Desk</h4>
+          <p>Technical support for university systems.</p>
+        </div>
+
+        <button
+          class="outline-btn help-btn"
+          data-service="IT Help Desk"
+          data-email="it.help@prototype.edu.au"
+          data-phone="(08) 9000 1002"
+          data-location="IT Service Desk"
+        >
+          Get Help
+        </button>
+      </article>
+
+      <article class="support-item searchable" data-search="health wellness counselling">
+        <div class="icon-box">❤️</div>
+
+        <div>
+          <h4>Health & Wellness</h4>
+          <p>Wellbeing and counselling support.</p>
+        </div>
+
+        <button
+          class="outline-btn help-btn"
+          data-service="Health & Wellness"
+          data-email="wellbeing@prototype.edu.au"
+          data-phone="(08) 9000 1003"
+          data-location="Wellness Centre"
+        >
+          Get Help
+        </button>
+      </article>
+
+    </div>
+  </div>
+
+</section>
+
+    </main>
+
+
+    <!-- Footer -->
+    <footer>
+      <p>Smart Campus Support Application — Front-End Prototype</p>
+    </footer>
+
+  </div>
+
+  <!-- Announcement details -->
+<div id="announcementModal" class="modal hidden">
+  <div class="modal-card">
+    <button id="closeAnnouncementBtn" class="close-btn" aria-label="Close">×</button>
+
+    <h3 id="announcementTitle"></h3>
+
+    <small id="announcementDate"></small>
+
+    <p id="announcementDetails"></p>
+  </div>
+</div>
+
+  <!-- Event details -->
+      <div id="eventModal" class="modal hidden">
+        <div class="modal-card">
+          <button id="closeEventBtn" class="close-btn" aria-label="Close">×</button>
+
+          <h3 id="eventTitle"></h3>
+          <p id="eventDate"></p>
+          <p id="eventTime"></p>
+          <p id="eventLocation"></p>
+          <p id="eventDetails"></p>
+        </div>
+      </div>
+
+      <!-- Support service details -->
+        <div id="supportModal" class="modal hidden">
+          <div class="modal-card">
+
+            <button id="closeSupportBtn" class="close-btn" aria-label="Close">×</button>
+
+            <h3 id="supportTitle"></h3>
+
+            <p>
+              <strong>Email:</strong>
+              <span id="supportEmail"></span>
+            </p>
+
+            <p>
+              <strong>Phone:</strong>
+              <span id="supportPhone"></span>
+            </p>
+
+            <p>
+              <strong>Location:</strong>
+              <span id="supportLocation"></span>
+            </p>
+
+            <button id="copySupportBtn" class="primary-btn">
+              Copy Contact Details
+            </button>
+
+            </div>
+          </div>
+
+  <!-- Report issue -->
   <div id="reportModal" class="modal hidden">
     <div class="modal-card">
-      <button id="closeModal" class="close-btn">×</button>
+
+      <button id="closeModalBtn" class="close-btn" aria-label="Close">
+        ×
+      </button>
+
       <h3>Report an Issue</h3>
+
       <label for="issueType">Issue Type</label>
+
       <select id="issueType">
+        <option value="">Select an issue</option>
         <option>Incorrect campus information</option>
         <option>Broken link</option>
         <option>Navigation issue</option>
         <option>Other</option>
       </select>
-      <label for="issueText">Details</label>
-      <textarea id="issueText" rows="5" placeholder="Describe the issue..."></textarea>
-      <button id="submitIssue" class="primary-btn">Submit</button>
+
+      <label for="issueDetails">Details</label>
+
+      <textarea
+        id="issueDetails"
+        rows="5"
+        placeholder="Describe the issue..."
+      ></textarea>
+
+      <p id="reportError" class="error-text"></p>
+
+      <button id="submitIssueBtn" class="primary-btn">
+        Submit Issue
+      </button>
+
     </div>
   </div>
 
-  <script src="script.js"></script>
+
+  <!-- JavaScript -->
+  <script src="js/app.js"></script>
+
 </body>
 </html>

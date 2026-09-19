@@ -1,3 +1,4 @@
+/* General styles */
 * {
   box-sizing: border-box;
 }
@@ -15,6 +16,7 @@
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 110px;
 }
 
 body {
@@ -39,6 +41,8 @@ button {
   display: none !important;
 }
 
+
+/* Login */
 .login-screen {
   min-height: 100vh;
   display: grid;
@@ -120,6 +124,53 @@ textarea {
   background: var(--primary-dark);
 }
 
+
+/* Password */
+.password-box {
+  position: relative;
+}
+
+.password-box input {
+  padding-right: 70px;
+}
+
+#togglePassword {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: #2f5f92;
+  font-weight: bold;
+}
+
+.password-requirements {
+  margin-top: 10px;
+  font-size: 13px;
+}
+
+.password-requirements p {
+  margin: 4px 0;
+}
+
+.requirement-valid {
+  color: green;
+}
+
+.requirement-invalid {
+  color: red;
+}
+
+.error-text {
+  color: red;
+  font-size: 13px;
+  margin-top: 10px;
+}
+
+
+/* Header and navigation */
 .topbar {
   position: sticky;
   top: 0;
@@ -189,12 +240,16 @@ nav a:hover {
   background: transparent;
 }
 
+
+/* Main page */
 .page-shell {
   width: min(1180px, 92%);
   margin: 0 auto;
   padding: 28px 0 42px;
 }
 
+
+/* Dashboard */
 .hero-card {
   min-height: 155px;
   padding: 28px;
@@ -227,6 +282,8 @@ nav a:hover {
   font-size: 56px;
 }
 
+
+/* Search */
 .search-bar-wrap {
   margin: 18px 0 8px;
 }
@@ -235,6 +292,12 @@ nav a:hover {
   padding: 15px 18px;
 }
 
+.search-hidden {
+  display: none !important;
+}
+
+
+/* Sections */
 .section {
   margin-top: 26px;
 }
@@ -251,6 +314,8 @@ nav a:hover {
   margin: 0;
 }
 
+
+/* Quick actions */
 .quick-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -276,12 +341,15 @@ nav a:hover {
   font-size: 28px;
 }
 
+
+/* Announcements and events */
 .two-column {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 22px;
   margin-top: 24px;
-}
+  align-items: start;
+} 
 
 .panel {
   padding: 20px;
@@ -352,14 +420,28 @@ small {
   font-size: 20px;
 }
 
+
+/* Campus map */
 .map-placeholder {
   position: relative;
   height: 270px;
   overflow: hidden;
   border-radius: 12px;
   background:
-    linear-gradient(90deg, transparent 47%, rgba(255,255,255,.9) 48%, rgba(255,255,255,.9) 52%, transparent 53%),
-    linear-gradient(0deg, transparent 47%, rgba(255,255,255,.9) 48%, rgba(255,255,255,.9) 52%, transparent 53%),
+    linear-gradient(
+      90deg,
+      transparent 47%,
+      rgba(255,255,255,.9) 48%,
+      rgba(255,255,255,.9) 52%,
+      transparent 53%
+    ),
+    linear-gradient(
+      0deg,
+      transparent 47%,
+      rgba(255,255,255,.9) 48%,
+      rgba(255,255,255,.9) 52%,
+      transparent 53%
+    ),
     #e7ebef;
 }
 
@@ -396,11 +478,28 @@ small {
   font-size: 10px;
 }
 
-.marker-a { left: 18%; top: 18%; }
-.marker-b { left: 58%; top: 28%; }
-.marker-c { left: 35%; top: 62%; }
-.marker-d { right: 12%; bottom: 18%; }
+.marker-a {
+  left: 18%;
+  top: 18%;
+}
 
+.marker-b {
+  left: 58%;
+  top: 28%;
+}
+
+.marker-c {
+  left: 35%;
+  top: 62%;
+}
+
+.marker-d {
+  right: 12%;
+  bottom: 18%;
+}
+
+
+/* Support services */
 .support-list {
   display: grid;
   gap: 12px;
@@ -416,6 +515,8 @@ small {
   border-radius: 10px;
 }
 
+
+/* Footer */
 footer {
   padding: 24px;
   text-align: center;
@@ -423,6 +524,8 @@ footer {
   font-size: 13px;
 }
 
+
+/* Report issue modal */
 .modal {
   position: fixed;
   inset: 0;
@@ -450,11 +553,10 @@ footer {
   font-size: 28px;
 }
 
-.search-hidden {
-  display: none !important;
-}
 
+/* Tablet and mobile */
 @media (max-width: 850px) {
+
   .mobile-menu-btn {
     display: block;
   }
@@ -491,7 +593,10 @@ footer {
   }
 }
 
+
+/* Small mobile screens */
 @media (max-width: 520px) {
+
   .page-shell {
     width: min(94%, 460px);
   }
@@ -512,4 +617,147 @@ footer {
     grid-column: 2;
     justify-self: start;
   }
+
+}
+
+/* Announcements and events */
+.announcement-item {
+  cursor: pointer;
+}
+
+.announcement-item:hover {
+  background: var(--soft);
+}
+
+/* Announcements and events */
+.event-click {
+  cursor: pointer;
+}
+
+.event-click:hover {
+  background: var(--soft);
+}
+
+/* Campus map search */
+.location-search {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.location-search input {
+  flex: 1;
+}
+
+.location-result {
+  padding: 10px 12px;
+  margin: 0 0 12px;
+  background: var(--soft);
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.map-marker {
+  position: absolute;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 22px;
+}
+
+/* Support services */
+.help-btn {
+  white-space: nowrap;
+}
+
+#supportModal p {
+  margin: 12px 0;
+}
+
+#supportModal span {
+  color: var(--muted);
+}
+
+/* Notifications */
+.notification-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.notification-btn {
+  position: relative;
+  border: none;
+  background: transparent;
+  padding: 8px;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+#notificationCount {
+  position: absolute;
+  top: 0;
+  right: 0;
+  min-width: 17px;
+  height: 17px;
+  padding: 2px 5px;
+  border-radius: 50%;
+  background: #d93025;
+  color: white;
+  font-size: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.notification-menu {
+  position: absolute;
+  top: 45px;
+  right: 0;
+  width: 330px;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  z-index: 500;
+  overflow: hidden;
+}
+
+.notification-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.notification-item {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+}
+
+.notification-item:hover {
+  background: var(--soft);
+}
+
+.notification-item p {
+  margin: 5px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.notification-item.read {
+  opacity: 0.5;
+}
+
+.notification-details {
+  padding: 14px;
+  background: var(--soft);
+}
+
+.notification-details p {
+  margin: 7px 0 0;
+  font-size: 13px;
+  line-height: 1.5;
 }
