@@ -79,8 +79,8 @@ function updateRequirement(element, valid, text) {
 }
 
 
-// Login validation
-loginBtn.addEventListener("click", () => {
+// Login validation and Java backend authentication
+loginBtn.addEventListener("click", async () => {
 
   const email = document
     .getElementById("email")
@@ -100,27 +100,59 @@ loginBtn.addEventListener("click", () => {
   const hasSymbol = /[^A-Za-z0-9]/.test(password);
 
   if (!validEmail.test(email)) {
-
     loginError.textContent =
       "Please enter a valid Notre Dame email ending with @notredame.edu.au";
-
     return;
   }
 
   if (!hasLength || !hasLetter || !hasNumber || !hasSymbol) {
-
     loginError.textContent =
       "Invalid password. Please meet all password requirements below.";
-
     return;
   }
 
-  loginError.textContent = "";
+  loginError.textContent = "Logging in...";
 
-  sessionStorage.setItem("loggedIn", "true");
+  try {
 
-loginScreen.classList.add("hidden");
-app.classList.remove("hidden");
+    const response = await fetch("/api/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        email: email,
+        password: password
+      })
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+
+      sessionStorage.setItem("loggedIn", "true");
+      sessionStorage.setItem("user", JSON.stringify(data.user));
+
+      loginError.textContent = "";
+
+      loginScreen.classList.add("hidden");
+      app.classList.remove("hidden");
+
+    } else {
+
+      loginError.textContent =
+        data.message || "Invalid email or password.";
+
+    }
+
+  } catch (error) {
+
+    console.error("Login error:", error);
+
+    loginError.textContent =
+      "Unable to connect to the Java backend.";
+
+  }
 
 });
 
@@ -198,10 +230,89 @@ globalSearch.addEventListener("input", () => {
 // Announcements
 const announcementToggle = document.getElementById("announcementToggle");
 
+async function loadAnnouncements() {
+
+  try {
+
+    const response = await fetch("/api/announcements");
+    const announcements = await response.json();
+
+    // Find the existing announcement items
+    const existingItems =
+      document.querySelectorAll(".announcement-item");
+
+    if (existingItems.length === 0) {
+      console.error("Announcement items were not found in the HTML.");
+      return;
+    }
+
+    // Use the parent container of the existing announcements
+    const container = existingItems[0].parentElement;
+
+    // Remove existing hardcoded announcements
+    container.querySelectorAll(".announcement-item").forEach(item => {
+      item.remove();
+    });
+
+    // Create announcements from the database
+    announcements.forEach((announcement, index) => {
+
+      const item = document.createElement("div");
+
+      item.className =
+        "announcement-item searchable" +
+        (index >= 3 ? " extra-announcement hidden" : "");
+
+      item.dataset.title = announcement.title;
+      item.dataset.date = announcement.date;
+      item.dataset.details = announcement.content;
+
+      item.innerHTML = `
+        <h3>${announcement.title}</h3>
+        <p>${announcement.date}</p>
+      `;
+
+      container.appendChild(item);
+
+      // Open announcement details
+      item.addEventListener("click", () => {
+
+        announcementTitle.textContent =
+          announcement.title;
+
+        announcementDate.textContent =
+          announcement.date;
+
+        announcementDetails.textContent =
+          announcement.content;
+
+        announcementModal.classList.remove("hidden");
+
+      });
+
+    });
+
+  } catch (error) {
+
+    console.error(
+      "Unable to load announcements:",
+      error
+    );
+
+  }
+
+}
+
+
+// Show / hide announcements
 announcementToggle.addEventListener("click", () => {
 
   const extraAnnouncements =
     document.querySelectorAll(".extra-announcement");
+
+  if (extraAnnouncements.length === 0) {
+    return;
+  }
 
   const isHidden =
     extraAnnouncements[0].classList.contains("hidden");
@@ -215,6 +326,9 @@ announcementToggle.addEventListener("click", () => {
 
 });
 
+
+// Load announcements from Java backend
+loadAnnouncements();
 
 // Announcement details
 const announcementModal = document.getElementById("announcementModal");
@@ -594,18 +708,3 @@ document.addEventListener("click", event => {
 
 updateNotificationCount();
 
-// Java backend connection later
-/*
-
-Subham will connect this front-end to the Java backend and database.
-
-Suggested endpoints:
-
-GET /api/announcements
-GET /api/events
-GET /api/locations
-GET /api/support-services
-POST /api/feedback
-POST /api/login
-
-*/
