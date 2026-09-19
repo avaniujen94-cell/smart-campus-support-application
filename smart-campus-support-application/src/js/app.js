@@ -327,42 +327,96 @@ announcementToggle.addEventListener("click", () => {
 });
 
 
-// Load announcements from Java backend
 loadAnnouncements();
+// Load events from Java backend
+async function loadEvents() {
 
-// Announcement details
-const announcementModal = document.getElementById("announcementModal");
-const announcementTitle = document.getElementById("announcementTitle");
-const announcementDate = document.getElementById("announcementDate");
-const announcementDetails = document.getElementById("announcementDetails");
-const closeAnnouncementBtn = document.getElementById("closeAnnouncementBtn");
+  try {
 
-document.querySelectorAll(".announcement-item").forEach(item => {
+    const response = await fetch("/api/events");
 
-  item.addEventListener("click", () => {
+    if (!response.ok) {
+      throw new Error("Failed to load events");
+    }
 
-    announcementTitle.textContent = item.dataset.title;
-    announcementDate.textContent = item.dataset.date;
-    announcementDetails.textContent = item.dataset.details;
+    const events = await response.json();
 
-    announcementModal.classList.remove("hidden");
+    const existingItems =
+      document.querySelectorAll(".event-item");
 
-  });
+    if (existingItems.length === 0) {
+      console.error("Event items were not found in the HTML.");
+      return;
+    }
 
-});
+    // Use the existing event container
+    const container = existingItems[0].parentElement;
 
-closeAnnouncementBtn.addEventListener("click", () => {
-  announcementModal.classList.add("hidden");
-});
+    // Remove hardcoded events
+    container.querySelectorAll(".event-item").forEach(item => {
+      item.remove();
+    });
 
-announcementModal.addEventListener("click", event => {
+    // Create events using database data
+    events.forEach((event, index) => {
 
-  if (event.target === announcementModal) {
-    announcementModal.classList.add("hidden");
+      const item = document.createElement("div");
+
+      item.className =
+        "event-item searchable event-click" +
+        (index >= 3 ? " extra-event hidden" : "");
+
+      item.dataset.title = event.name;
+      item.dataset.date = event.date;
+      item.dataset.time = event.time;
+      item.dataset.location = event.location;
+      item.dataset.details = event.description;
+
+      item.innerHTML = `
+        <h3>${event.name}</h3>
+        <p>${event.date} | ${event.time}</p>
+        <p>${event.location}</p>
+      `;
+
+      container.appendChild(item);
+
+      // Event details
+      item.addEventListener("click", () => {
+
+        eventTitle.textContent = event.name;
+
+        eventDate.textContent =
+          "Date: " + event.date;
+
+        eventTime.textContent =
+          "Time: " + event.time;
+
+        eventLocation.textContent =
+          "Location: " + event.location;
+
+        eventDetails.textContent =
+          event.description;
+
+        eventModal.classList.remove("hidden");
+
+      });
+
+    });
+
+    console.log("Events loaded successfully from database.");
+
+  } catch (error) {
+
+    console.error(
+      "Unable to load events:",
+      error
+    );
+
   }
 
-});
+}
 
+loadEvents();
 // Campus map
 const locationSearch = document.getElementById("locationSearch");
 const locationSearchBtn = document.getElementById("locationSearchBtn");
