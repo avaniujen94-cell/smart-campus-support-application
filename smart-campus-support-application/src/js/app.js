@@ -532,26 +532,13 @@ const supportLocation = document.getElementById("supportLocation");
 const closeSupportBtn = document.getElementById("closeSupportBtn");
 const copySupportBtn = document.getElementById("copySupportBtn");
 
-document.querySelectorAll(".help-btn").forEach(button => {
-
-  button.addEventListener("click", () => {
-
-    supportTitle.textContent = button.dataset.service;
-    supportEmail.textContent = button.dataset.email;
-    supportPhone.textContent = button.dataset.phone;
-    supportLocation.textContent = button.dataset.location;
-
-    supportModal.classList.remove("hidden");
-
-  });
-
-});
-
+// Close support modal
 closeSupportBtn.addEventListener("click", () => {
   supportModal.classList.add("hidden");
 });
 
-supportModal.addEventListener("click", event => {
+// Close support modal when clicking outside the modal content
+supportModal.addEventListener("click", (event) => {
 
   if (event.target === supportModal) {
     supportModal.classList.add("hidden");
@@ -559,23 +546,130 @@ supportModal.addEventListener("click", event => {
 
 });
 
-copySupportBtn.addEventListener("click", () => {
 
-  const contactDetails =
-    "Email: " + supportEmail.textContent +
-    "\nPhone: " + supportPhone.textContent +
-    "\nLocation: " + supportLocation.textContent;
+// Load support services from Java backend
+async function loadSupportServices() {
 
-  navigator.clipboard.writeText(contactDetails);
+  try {
 
-  copySupportBtn.textContent = "Copied!";
+    const response = await fetch("/api/support-services");
 
-  setTimeout(() => {
-    copySupportBtn.textContent = "Copy Contact Details";
-  }, 1500);
+    if (!response.ok) {
+      throw new Error("Failed to load support services");
+    }
+
+    const services = await response.json();
+
+    const container =
+      document.querySelector(".support-list");
+
+    if (!container) {
+      console.error("Support services container was not found.");
+      return;
+    }
+
+    // Clear existing hardcoded services
+    container.innerHTML = "";
+
+    // Create services from database
+    services.forEach((service, index) => {
+
+      const item = document.createElement("article");
+
+      item.className =
+        "support-item searchable" +
+        (index >= 3 ? " extra-service hidden" : "");
+
+      item.dataset.search =
+        `${service.name} ${service.description} ${service.location}`.toLowerCase();
+
+      item.innerHTML = `
+        <div class="icon-box">🛟</div>
+
+        <div>
+          <h4>${service.name}</h4>
+          <p>${service.description}</p>
+        </div>
+
+        <button
+          class="outline-btn help-btn"
+          data-service="${service.name}"
+          data-email="${service.contact}"
+          data-location="${service.location}"
+        >
+          Get Help
+        </button>
+      `;
+
+      container.appendChild(item);
+
+    });
+
+    // Add Get Help button actions
+    document.querySelectorAll(".help-btn").forEach(button => {
+
+      button.addEventListener("click", () => {
+
+        supportTitle.textContent =
+          button.dataset.service;
+
+        supportEmail.textContent =
+          button.dataset.email;
+
+        supportPhone.textContent =
+          "Contact by email";
+
+        supportLocation.textContent =
+          button.dataset.location;
+
+        supportModal.classList.remove("hidden");
+
+      });
+
+    });
+
+    console.log(
+      "Support services loaded successfully from database."
+    );
+
+  } catch (error) {
+
+    console.error(
+      "Unable to load support services:",
+      error
+    );
+
+  }
+
+}
+
+
+// Load support services
+loadSupportServices();
+
+// Support services View All / Show Less
+const serviceToggle = document.getElementById("serviceToggle");
+
+serviceToggle.addEventListener("click", () => {
+
+  const extraServices =
+    document.querySelectorAll(".extra-service");
+
+  if (extraServices.length === 0) {
+    return;
+  }
+
+  const isHidden =
+    extraServices[0].classList.contains("hidden");
+
+  extraServices.forEach(service => {
+    service.classList.toggle("hidden");
+  });
+
+  serviceToggle.textContent =
+    isHidden ? "Show Less" : "View All";
 
 });
-
 // Report issue
 reportIssueBtn.addEventListener("click", () => {
 
