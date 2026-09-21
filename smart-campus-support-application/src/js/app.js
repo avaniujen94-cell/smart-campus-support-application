@@ -160,11 +160,31 @@ loginBtn.addEventListener("click", async () => {
 // Logout
 logoutBtn.addEventListener("click", () => {
 
-  app.classList.add("hidden");
-  loginScreen.classList.remove("hidden");
-  navMenu.classList.remove("open");
-  sessionStorage.removeItem("loggedIn");
+    // Clear saved login information
+    sessionStorage.clear();
 
+    // Clear email and password fields
+    document.getElementById("email").value = "";
+    document.getElementById("password").value = "";
+
+    // Reset password field to hidden
+    document.getElementById("password").type = "password";
+    document.getElementById("togglePassword").textContent = "Show";
+
+    // Show login screen
+    app.classList.add("hidden");
+    loginScreen.classList.remove("hidden");
+
+    // Show logout confirmation message
+    const logoutMessage =
+        document.getElementById("logoutMessage");
+
+    logoutMessage.classList.remove("hidden");
+
+    // Hide message after 3 seconds
+    setTimeout(() => {
+        logoutMessage.classList.add("hidden");
+    }, 3000);
 });
 
 
@@ -328,6 +348,22 @@ announcementToggle.addEventListener("click", () => {
 
 
 loadAnnouncements();
+
+// Close announcement modal
+const closeAnnouncementBtn =
+  document.getElementById("closeAnnouncementBtn");
+
+closeAnnouncementBtn.addEventListener("click", () => {
+  announcementModal.classList.add("hidden");
+});
+
+// Close announcement modal when clicking outside the modal card
+announcementModal.addEventListener("click", (event) => {
+  if (event.target === announcementModal) {
+    announcementModal.classList.add("hidden");
+  }
+});
+
 // Load events from Java backend
 async function loadEvents() {
 

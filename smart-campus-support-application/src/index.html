@@ -409,7 +409,7 @@
       <input
         id="locationSearch"
         type="search"
-        placeholder="Search building or room, e.g. Library or B204"
+        placeholder="Search building or room, e.g. Main Library or Student Centre"
       >
       <button id="locationSearchBtn" class="outline-btn">Find</button>
     </div>
@@ -474,17 +474,23 @@
 
   </div>
 
-  <!-- Announcement details -->
+ <!-- Announcement Modal -->
 <div id="announcementModal" class="modal hidden">
-  <div class="modal-card">
-    <button id="closeAnnouncementBtn" class="close-btn" aria-label="Close">×</button>
+    <div class="modal-card">
+        <button
+            id="closeAnnouncementBtn"
+            class="close-btn"
+            aria-label="Close announcement"
+        >
+            ×
+        </button>
 
-    <h3 id="announcementTitle"></h3>
+        <h3 id="announcementTitle"></h3>
 
-    <small id="announcementDate"></small>
+        <p id="announcementDate"></p>
 
-    <p id="announcementDetails"></p>
-  </div>
+        <p id="announcementDetails"></p>
+    </div>
 </div>
 
   <!-- Event details -->
@@ -571,5 +577,9 @@
   <!-- JavaScript -->
   <script src="js/app.js"></script>
 
+  <!-- Logout Message -->
+  <div id="logoutMessage" class="logout-message hidden">
+    You have been logged out successfully.
+  </div>
 </body>
 </html>
