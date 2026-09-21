@@ -422,50 +422,82 @@ const locationSearch = document.getElementById("locationSearch");
 const locationSearchBtn = document.getElementById("locationSearchBtn");
 const locationResult = document.getElementById("locationResult");
 
-const campusLocations = [
-  {
-    names: ["library", "main library"],
-    result: "Main Library — Building L, Ground Floor."
-  },
-  {
-    names: ["student centre", "student center"],
-    result: "Student Centre — Building S, near the main courtyard."
-  },
-  {
-    names: ["admin", "administration"],
-    result: "Administration — Building A, Level 1."
-  },
-  {
-    names: ["science", "science building"],
-    result: "Science Building — Building C."
-  },
-  {
-    names: ["b204", "room b204"],
-    result: "Room B204 — Building B, Level 2."
-  }
-];
+// Load campus locations from Java backend
+let campusLocations = [];
 
+async function loadCampusLocations() {
+
+  try {
+
+    const response = await fetch("/api/locations");
+
+    if (!response.ok) {
+      throw new Error("Failed to load campus locations");
+    }
+
+    campusLocations = await response.json();
+
+    console.log(
+      "Campus locations loaded successfully from database."
+    );
+
+  } catch (error) {
+
+    console.error(
+      "Unable to load campus locations:",
+      error
+    );
+
+  }
+
+}
+
+
+// Find a campus location
 function findLocation(searchText) {
 
   const search = searchText.trim().toLowerCase();
 
   if (search === "") {
-    locationResult.textContent = "Please enter a building or room.";
+
+    locationResult.textContent =
+      "Please enter a building or room.";
+
     return;
   }
 
-  const location = campusLocations.find(item =>
-    item.names.some(name => name.includes(search) || search.includes(name))
-  );
+  const location = campusLocations.find(item => {
+
+    const building = item.building.toLowerCase();
+    const locationName = item.location.toLowerCase();
+    const description = item.description.toLowerCase();
+
+    return (
+      building.includes(search) ||
+      search.includes(building) ||
+      locationName.includes(search) ||
+      search.includes(locationName) ||
+      description.includes(search)
+    );
+
+  });
 
   if (location) {
-    locationResult.textContent = location.result;
+
+    locationResult.textContent =
+      `${location.building} — ${location.location}. ${location.description}`;
+
   } else {
+
     locationResult.textContent =
       "Location not found in the current campus map.";
-  }
 
+  }
 }
+
+
+// Load locations when the application starts
+loadCampusLocations();
 
 locationSearchBtn.addEventListener("click", () => {
   findLocation(locationSearch.value);
