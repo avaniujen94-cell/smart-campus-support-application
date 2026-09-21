@@ -695,27 +695,102 @@ reportModal.addEventListener("click", event => {
 
 
 // Report issue submission
-submitIssueBtn.addEventListener("click", () => {
+submitIssueBtn.addEventListener("click", async () => {
 
+  // Validate issue type
   if (issueType.value === "") {
-    reportError.textContent = "Please select an issue type.";
+
+    reportError.textContent =
+      "Please select an issue type.";
+
     return;
   }
 
+  // Validate issue details
   if (issueDetails.value.trim().length < 10) {
+
     reportError.textContent =
       "Please describe the issue using at least 10 characters.";
+
     return;
   }
 
   reportError.textContent = "";
 
-  alert("Your issue has been submitted successfully.");
+  try {
 
-  issueType.value = "";
-  issueDetails.value = "";
+    // Get logged-in user
+    const storedUser =
+      sessionStorage.getItem("user");
 
-  reportModal.classList.add("hidden");
+    if (!storedUser) {
+
+      reportError.textContent =
+        "Please log in before submitting an issue.";
+
+      return;
+    }
+
+    const user =
+      JSON.parse(storedUser);
+
+    // Send feedback to Java backend
+    const response = await fetch("/api/feedback", {
+
+      method: "POST",
+
+      headers: {
+        "Content-Type": "application/json"
+      },
+
+      body: JSON.stringify({
+
+        user_id: user.id,
+
+        subject: issueType.value,
+
+        description: issueDetails.value.trim(),
+
+        type: "Issue"
+
+      })
+
+    });
+
+    const data =
+      await response.json();
+
+    if (!response.ok || !data.success) {
+
+      throw new Error(
+        data.message || "Unable to submit issue."
+      );
+
+    }
+
+    // Successful submission
+    alert("Your issue has been submitted successfully.");
+
+    issueType.value = "";
+    issueDetails.value = "";
+
+    reportModal.classList.add("hidden");
+
+    console.log(
+      "Issue submitted successfully to database."
+    );
+
+  } catch (error) {
+
+    console.error(
+      "Unable to submit issue:",
+      error
+    );
+
+    reportError.textContent =
+      "Unable to submit your issue. Please try again.";
+
+  }
 
 });
 
